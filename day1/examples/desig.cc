@@ -8,7 +8,7 @@ auto example_func(pars p)
     return p.size;
 }
 
-int main()
+auto main() -> int
 {
     example_func({.offset = 5, .size = 10});
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <ranges>
+#include <cxx20ranges>
 #include <execution>
 #include <limits>
 #include <atomic>
@@ -20,8 +20,9 @@
  * time executablename [OPTIONS]
  *
  */
-namespace sr = std::ranges;
-namespace sv = std::views;
+// defined in cxx20ranges
+// namespace sr = std::ranges;
+// namespace sv = std::views;
 
 template <class T>
 //using VectorType = std::vector<T, tbb::scalable_allocator<T>>;

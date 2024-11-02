@@ -8,12 +8,15 @@ project(xtensor_examples CXX)
 find_package(xtl REQUIRED)
 find_package(xtensor REQUIRED)
 find_package(xsimd REQUIRED)
-find_package(OpenBLAS REQUIRED)
+find_package(Threads REQUIRED)
+set(BLA_VENDOR OpenBLAS)
+find_package(BLAS)
 
 set(progs xt0 xt1 xt2)
 
 foreach(prog ${progs})
     add_executable(${prog} ${prog}.cc)
-    target_link_libraries(${prog} xtensor xtensor::optimize OpenBLAS::OpenBLAS gfortran)
+    target_link_libraries(${prog} xtensor xtensor::optimize xtensor::use_xsimd
+	    BLAS::BLAS Threads::Threads gfortran)
 endforeach()
 

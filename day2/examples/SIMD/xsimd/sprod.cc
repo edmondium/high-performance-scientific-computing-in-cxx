@@ -1,19 +1,25 @@
 #include "xsimd/xsimd.hpp"
+#include <span>
 
-auto sprod_explicit(size_t n, const double x[],
-                   const double y[]) -> double
+using Arch = xsimd::avx2;
+
+auto sprod_explicit(std::span<const double> x,
+                   std::span<const double> y) -> double
 {
-    xsimd::simd_type<double> bx{0.}, by{0.}, tot{0.};
-    unsigned long vsize = n - n % 4;
-    const double * xptr0 = x;
-    const double * xptr1 = x + vsize;
-    for (; xptr0 != xptr1; xptr0 += 4, y += 4) {
-        bx.load_unaligned(xptr0);
-        by.load_unaligned(y);
+    using b_type = xsimd::batch<double, Arch>;
+    constexpr auto bsize = b_type::size;
+    b_type tot{};
+    unsigned long vsize = x.size() - x.size() % bsize;
+    const auto* xptr0 = x.data();
+    const auto* xptr1 = x.data() + vsize;
+    const auto* yptr = y.data();
+    for (; xptr0 != xptr1; xptr0 += bsize, yptr += bsize) {
+        auto bx = b_type::load_unaligned(xptr0);
+        auto by = b_type::load_unaligned(yptr);
         tot = tot + bx * by;
     }
-    auto res = hadd(tot);
-    for (auto i = vsize; i < n; ++i) {
+    auto res = reduce_add(tot);
+    for (auto i = vsize; i < x.size(); ++i) {
         res += x[i] * y[i];
     }
     return res;

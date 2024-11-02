@@ -1,17 +1,17 @@
 #include "CountingIterator.hh"
 #include <algorithm>
+#include <chrono>
 #include <complex>
 #include <execution>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <chrono>
 
 void save_pgm(std::string filename, size_t width, size_t height,
     std::vector<unsigned char> data)
 {
-    std::ofstream fout{ filename };
+    std::ofstream fout { filename };
     fout << "P2\n"
          << width << " " << height << " 255\n";
     for (size_t row = 0; row < height; ++row) {
@@ -24,18 +24,18 @@ void save_pgm(std::string filename, size_t width, size_t height,
     fout.close();
 }
 
-std::vector<unsigned char> mandel(size_t width, size_t height)
+auto mandel(size_t width, size_t height) -> std::vector<unsigned char> 
 {
     double aspect = static_cast<double>(width) / height;
     std::vector<unsigned char> ans(width * height, 0);
-    CountingIterator<size_t> beg{ 0 }, end{ width * height };
-    std::transform(beg, end,
+    CountingIterator<size_t> beg { 0 }, end { width * height };
+    std::transform(std::execution::par, beg, end,
         ans.begin(), [=](size_t index) {
             double myrow = index / width;
             double mycol = index % width;
             myrow /= height;
             mycol /= width;
-            std::complex<double> z0{ aspect * (2 * mycol - 1) - 0.5,
+            std::complex<double> z0 { aspect * (2 * mycol - 1) - 0.5,
                 2 * myrow - 1 };
             unsigned char lim = 255;
             double mag = 0;
@@ -49,7 +49,7 @@ std::vector<unsigned char> mandel(size_t width, size_t height)
     return ans;
 }
 
-int main(int argc, char* argv[])
+auto main(int argc, char* argv[]) -> int
 {
     if (argc != 3) {
         std::cerr << "Usage:\n"

@@ -1,6 +1,6 @@
 #include <array>
 #include <iostream>
-#include <type_traits>
+#include <concepts>
 
 enum class ISA { SSE,
     AVX,
@@ -13,12 +13,13 @@ template <> constexpr auto vec_bytes<ISA::AVX512> = 64UL;
 template <> constexpr auto vec_bytes<ISA::MIC> = 64UL;
 
 constexpr ISA target_isa = ISA::AVX512;
-
-template <class T> requires std::is_arithmetic_v<T>
+template <class N> concept Number = std::floating_point<N> || std::integral<N>;
+template <Number T>
 struct alignas(vec_bytes<target_isa>) simd_t {
-    static_assert(vec_bytes<target_isa> % sizeof(T) == 0, "vector width must be an integral multiple of type size");
     static constexpr auto nelems = vec_bytes<target_isa> / sizeof(T);
     std::array<T, nelems> data;
+    static_assert(vec_bytes<target_isa> % sizeof(T) == 0,
+        "vector width must be an integral multiple of type size");
 };
 
 auto main() -> int

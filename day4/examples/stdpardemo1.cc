@@ -5,9 +5,10 @@
 #include <algorithm>
 #include <string>
 #include <execution>
+//#include <span>
 
 constexpr auto Lambda = 0.75;
-constexpr auto L2 = Lambda * Lambda;
+//constexpr auto L2 = Lambda * Lambda;
 constexpr auto cut = 4.3;
 constexpr auto cut2 = cut * cut;
 constexpr auto icut2 = 1.0 / cut2;
@@ -36,11 +37,21 @@ auto Vexv(T r2, T sigsa12) -> T
 auto exvolcalc(const vector_type<double>& R2, const vector_type<double>& S12) -> double
 {
     return 
-    std::transform_reduce(std::execution::par, R2.begin(), R2.end(), S12.begin(), 
+    std::transform_reduce(std::execution::par_unseq, R2.begin(), R2.end(), S12.begin(), 
         0., std::plus<double>{}, [](auto r2, auto s12){
         return Vexv(r2, s12);
     });
 }
+/*
+auto exvolcalc2(std::span<const double> R2, std::span<const double> S12) -> double
+{
+    return 
+    std::transform_reduce(std::execution::par_unseq, R2.begin(), R2.end(), S12.begin(), 
+        0., std::plus<double>{}, [](auto r2, auto s12){
+        return Vexv(r2, s12);
+    });
+}
+*/
 
 struct options {
     void usage(std::string prog)

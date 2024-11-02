@@ -1,11 +1,11 @@
-#include <thrust/host_vector.h>
+#include <cstdlib>
+#include <thrust/copy.h>
 #include <thrust/device_vector.h>
 #include <thrust/generate.h>
+#include <thrust/host_vector.h>
 #include <thrust/sort.h>
-#include <thrust/copy.h>
-#include <cstdlib>
 
-int main()
+auto main() -> int
 {
     // generate 32 M random numbers on the host
     thrust::host_vector<int> h_vec(1 << 22);
@@ -28,4 +28,3 @@ int main()
     thrust::copy(d_vec.begin(), d_vec.end(), h_vec.begin());
     std::cout << "Done.\n";
 }
-

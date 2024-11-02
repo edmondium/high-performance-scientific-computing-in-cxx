@@ -29,7 +29,7 @@ auto ran01() -> double
     return dist(engine);
 }
 struct BlockMatrix {
-    static constexpr auto nblk = 32UL;
+    static constexpr auto nblk = 16UL;
     using value_type = double;
     std::array<AtomMatrix<double>, nblk * nblk> blks;
     auto block(size_t i, size_t j) -> AtomMatrix<double>&
@@ -40,7 +40,7 @@ struct BlockMatrix {
     {
         return blks[nblk * i + j];
     }
-    auto operator()(size_t i, size_t j) const -> value_type
+    auto operator()(size_t i, size_t j) const -> const value_type&
     {
         auto [ib, jb, ii, jj] = blocked_index<block_width>(i, j);
         return blks[nblk * ib + jb](ii, jj);
@@ -76,10 +76,10 @@ auto operator*(const BlockMatrix& L, const BlockMatrix& R) -> BlockMatrix::BMPro
 }
 void BlockMatrix::operator+=(BlockMatrix::BMProd prod)
 {
-    for (size_t i = 0ul; i < n_blocks(); ++i) {
-        for (size_t j = 0ul; j < n_blocks(); ++j) {
+    for (size_t i = 0UL; i < n_blocks(); ++i) {
+        for (size_t j = 0UL; j < n_blocks(); ++j) {
             auto tmp = block(i, j).to_row_blocks();
-            for (size_t k = 0ul; k < prod.lhs.n_blocks(); ++k)
+            for (size_t k = 0UL; k < prod.lhs.n_blocks(); ++k)
                 mul(tmp, prod.lhs.block(i, k), prod.rhs.block(k, j));
             block(i, j).from_row_blocks(tmp);
         }
@@ -89,7 +89,7 @@ void BlockMatrix::operator+=(BlockMatrix::BMProd prod)
 template <class BlockType>
 struct matrix_view {
     BlockType* org = nullptr;
-    static constexpr auto incore_thresh = 16UL;
+    static constexpr auto incore_thresh = 64UL;
     size_t nel = 0;
     struct BlockProd {
         const matrix_view lhs;
@@ -152,7 +152,7 @@ public:
     static constexpr size_t block_grain_size = BlockType::size();
     auto nrows() const -> size_t { return nr; }
     auto ncols() const -> size_t { return nc; }
-    static_assert(block_grain_size != 0ul && ((block_grain_size & (block_grain_size - 1)) == 0),
+    static_assert(block_grain_size != 0UL && ((block_grain_size & (block_grain_size - 1)) == 0),
         "Block matrix must have 2^N x 2^N shape");
     struct matprod {
         const matrix& lhs;
@@ -191,7 +191,7 @@ public:
     }
     void random_fill()
     {
-        tbb::parallel_for(0ul, dat.size(), [&](auto i) {
+        tbb::parallel_for(0UL, dat.size(), [&](auto i) {
             dat[i].fill(ran01);
         });
     }
@@ -207,7 +207,7 @@ public:
     }
     auto operator=(double x) -> matrix&
     {
-        for (auto i = 0ul; i < dat.size(); ++i)
+        for (auto i = 0UL; i < dat.size(); ++i)
             dat[i] = x;
         return *this;
     }
@@ -219,7 +219,7 @@ public:
         C += (A * B);
         return *this;
     }
-    auto operator()(size_t i, size_t j) const -> value_type
+    auto operator()(size_t i, size_t j) const -> const value_type&
     {
         constexpr auto bs = block_grain_size;
         auto blkloc = morton(i / bs, j / bs);

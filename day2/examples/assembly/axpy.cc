@@ -20,7 +20,7 @@ template <typename FPType, unsigned N>
 auto operator*(FPType a, const Vec<FPType, N> & x) { return x * a; }
 
 using FT = float;
-constexpr auto sz = 16ul;
+constexpr auto sz = 16UL;
 auto f(FT a, const Vec<FT, sz> & x, const Vec<FT, sz> & y)
 {
     return a * x + y;

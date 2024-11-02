@@ -1,5 +1,3 @@
-#include <xtensor/xtensor.hpp>
-#include <xtensor/xarray.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xrandom.hpp>
 #include <xtensor-blas/xlinalg.hpp>

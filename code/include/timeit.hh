@@ -57,7 +57,7 @@ void timeit(std::string_view testname, unsigned reps, Callable&& f, Args&&... ar
     default:
         break;
     };
-    std::cout << "Timing results for " << testname << " from " << reps << " repeatitions...\n";
+    std::cout << "Timing results for " << testname << " from " << reps << " repititions...\n";
     std::cout << "Mean = " << tmean * conv << unitstring << "\n";
     std::cout << "Std. dev = " << tstdv * conv << unitstring << "\n";
     std::cout << "Minimum = " << tmin * conv << unitstring << "\n";

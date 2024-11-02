@@ -1,0 +1,49 @@
+TSP example for the GPU with -stdpar
+====================================
+
+This example is meant to demonstrate solving
+problems using standard library algorithms on
+a GPU. This is NOT a CUDA program, but just
+a regular C++ code, which can be built using
+g++ or clang++ for the CPU. You can see that
+by bulding it like this (for CPU):
+
+mkdir build_cpu
+cd build_cpu
+CXX=g++ cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+./tsp -r -n 13
+
+Without changing any code, you should also be
+able to build the same program for the GPU.
+First make sure that the NVidia NVHPC tool kit
+is in the relevant PATH variables. This is not
+the regular CUDA compiler, nvcc, but instead
+the nvc++ compiler. In many supercomputing
+centres, that compiler is added to the PATH
+when you load a module, usually having NVHPC
+in its name. Here is how you build for the GPU:
+
+ml NVHPC CMake
+mkdir build_gpu
+cd build_gpu
+CXX=nvc++ cmake -DCMAKE_CXX_FLAGS="-gpu=cc70" -DCMAKE_BUILD_TYPE=Release ..
+make
+./tsp -r -n 15
+
+Note 1: We need a GPU with a compute capability of
+at least 70 for std::execution::par to be converted
+into GPU code. That's why the -gpu=cc70 option.
+Without that, the compilation goes through very quickly,
+but it is only being built for serial CPU execution.
+
+Note 2: When building for more recent GPUs, automatic
+GPU code generation does take place. But, as of version
+12 of the nvc++ compiler, linking fails with a message
+
+nvlink: Undefined reference to '__blt_pgi_clzl'
+
+If you successfully build and run this on a GPU, with
+-gpu=cc70 or higher, I would like to hear about what
+you did to fix it!
+

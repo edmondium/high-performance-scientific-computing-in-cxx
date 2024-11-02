@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ***********************************************
-#  High performance scientific computing in C++
-#  21 June 2021 -- 24 June 2021
+#  High-performance scientific computing in C++
+#  29 May -- 02 June 2023
 #  Jülich Supercomputing Centre
 # ***********************************************
 
@@ -28,7 +28,7 @@ remove_path_element() {
     local pathtochange prevpath toremove
     pathtochange=$1
     prevpath=${!pathtochange}
-    toremove=$(unregex $2)
+    toremove=$(rmspecial $2)
     prevpath=$(eval "echo ${prevpath} | sed -e 's#$toremove:##'")
     prevpath=$(eval "echo ${prevpath} | sed -e 's#:$toremove##'")
     eval "export ${pathtochange}=${prevpath}"
@@ -61,11 +61,22 @@ incpathadd() {
 incpathrm() {
     remove_path_element CPATH $1
 }
+manpathadd() {
+    prepend_path MANPATH $1
+}
+manpathrm() {
+    remove_path_element MANPATH $1
+}
 cmpathadd() {
     prepend_path CMAKE_PREFIX_PATH $1
 }
 cmpathrm() {
     remove_path_element CMAKE_PREFIX_PATH $1
 }
-
+pypathadd() {
+    prepend_path PYTHONPATH $1
+}
+pypathrm() {
+    remove_path_element PYTHONPATH $1
+}
 

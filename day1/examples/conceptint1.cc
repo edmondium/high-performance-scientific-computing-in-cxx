@@ -1,4 +1,4 @@
-template <int X>
+template <unsigned X>
 concept PowerOfTwo = (X != 0 && (X & (X-1)) == 0);
 
 template <class T, int N> requires PowerOfTwo<N>
@@ -8,6 +8,6 @@ struct MyMatrix {
 
 auto main() -> int
 {
-    auto m = MyMatrix<double, 17>{};
+    auto m = MyMatrix<double, 17U>{};
 }
 

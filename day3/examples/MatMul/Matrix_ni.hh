@@ -10,7 +10,6 @@
 #include <thread>
 #include <vector>
 
-constexpr auto block_width = AtomMatrix<double>::size();
 template <size_t bs>
 auto blocked_index(size_t i, size_t j)
 {
@@ -26,7 +25,10 @@ auto ran01() -> double
     static thread_local std::uniform_real_distribution<> dist;
     return dist(engine);
 }
-struct BlockMatrix {
+
+constexpr auto block_width = AtomMatrix<double>::size();
+
+struct alignas(CACHELINE_SIZE) BlockMatrix {
     static constexpr auto nblk = 64UL;
     using value_type = double;
     std::array<AtomMatrix<double>, nblk * nblk> blks;
@@ -63,12 +65,13 @@ struct BlockMatrix {
             b = x;
     }
 };
+
 void mul(BlockMatrix& C, const BlockMatrix& A, const BlockMatrix& B)
 {
-    for (size_t i = 0ul; i < C.n_blocks(); ++i) {
-        for (size_t j = 0ul; j < C.n_blocks(); ++j) {
+    for (size_t i = 0UL; i < C.n_blocks(); ++i) {
+        for (size_t j = 0UL; j < C.n_blocks(); ++j) {
             auto tmp = C.block(i, j).to_row_blocks();
-            for (size_t k = 0ul; k < A.n_blocks(); ++k)
+            for (size_t k = 0UL; k < A.n_blocks(); ++k)
                 mul(tmp, A.block(i, k), B.block(k, j));
             C.block(i, j).from_row_blocks(tmp);
         }
@@ -80,7 +83,7 @@ public:
     using value_type = double;
     auto nrows() const -> size_t { return nr; }
     auto ncols() const -> size_t { return nc; }
-    static constexpr auto block_grain_size() -> size_t { return BlockType::size(); }
+    static constexpr auto block_grain_size() -> size_t { return BlockMatrix::size(); }
     struct matprod {
         const matrix& lhs;
         const matrix& rhs;
@@ -113,7 +116,7 @@ public:
     }
     void random_fill()
     {
-        tbb::parallel_for(0ul, dat.size(), [&](auto i) {
+        tbb::parallel_for(0UL, dat.size(), [&](auto i) {
             dat[i].fill(ran01);
         });
     }
@@ -130,7 +133,7 @@ public:
 
     auto operator=(double x) -> matrix&
     {
-        for (auto i = 0ul; i < dat.size(); ++i)
+        for (auto i = 0UL; i < dat.size(); ++i)
             dat[i] = x;
         return *this;
     }
@@ -158,7 +161,7 @@ private:
     void add_blockwise_product(const matprod& p)
     {
         const auto nblk = nr / block_grain_size();
-        tbb::blocked_range<size_t> R(0ul, nblk);
+        tbb::blocked_range<size_t> R(0UL, nblk);
         tbb::parallel_for(R, [&](tbb::blocked_range<size_t> r) {
             for (size_t ib = r.begin(); ib < r.end(); ++ib) {
                 for (size_t kb = 0; kb < nblk; ++kb) {

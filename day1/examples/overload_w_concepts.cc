@@ -5,18 +5,12 @@
 #include <boost/type_index.hpp>
 
 template <class N> concept Number = std::is_floating_point_v<N> || std::is_integral_v<N>;
-template <class N> concept Float = Number<N> && std::is_floating_point_v<N>;
-
 template <class N> concept NotNumber = not Number<N>; 
 
 using namespace boost::typeindex;
 auto proc(Number auto&& x) -> void
 {
     std::cout << "Called proc for numbers with " << x << " of typeid " << type_id_runtime(x) << "\n";
-}
-auto proc(Float auto&& x) -> void
-{
-    std::cout << "Called proc for floats with " << x << " of typeid " << type_id_runtime(x) << "\n";
 }
 auto proc(NotNumber auto&& x) -> void
 {

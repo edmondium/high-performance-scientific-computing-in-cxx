@@ -10,7 +10,7 @@ constexpr auto bounds = []{
      return std::ranges::minmax( pre | std::views::transform(poly) );
 }();
 
-int main()
+auto main() -> int
 {
     std::cout << bounds.min << "\t" << bounds.max << "\n";
     static_assert(bounds.min > -1. and bounds.min < -0.94);

@@ -30,10 +30,20 @@ auto alignof_address(void* ptr) -> size_t
 
 auto main() -> int
 {
-    std::cout << "Alignment for simd type (float) : " << alignof(simd_t<float>) << " with " << simd_t<float>::nelems << " elements in vector\n";
-    std::cout << "Alignment for simd type (double) : " << alignof(simd_t<double>) << " with " << simd_t<double>::nelems << " elements in vector\n";
+    std::cout << "Alignment for simd type (float) : " 
+        << alignof(simd_t<float>) << " with " 
+        << simd_t<float>::nelems << " elements in vector\n";
+
+    std::cout << "Alignment for simd type (double) : " 
+        << alignof(simd_t<double>) << " with " 
+        << simd_t<double>::nelems << " elements in vector\n";
+
     auto* harr = new simd_t<double>[40];
-    std::cout << "Alignment for heap allocated array of simd_t<double> : " << alignof_address(harr) << "\n";
+    std::cout << "Alignment for heap allocated array of simd_t<double> : " 
+        << alignof_address(harr) << "\n";
+
     std::vector<simd_t<double>> v(400);
-    std::cout << "Alignment of data section of std::vector on the heap = " << alignof_address(v.data()) << "\n";
+    std::cout << "Alignment of data section of std::vector<simd_t<double>> on the heap = " 
+        << alignof_address(v.data()) << "\n";
 }
+

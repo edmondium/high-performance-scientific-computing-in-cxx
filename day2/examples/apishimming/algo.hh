@@ -15,7 +15,7 @@ concept hasAPI = requires( T x ) {
 // as before, but, just for the fun of it, here is another way to use
 // teh concept defined above. Concepts are boolean expressions of templates.
 
-template <class C> auto algo(C && x) -> size_t
+template <class C> auto algo(C&& x) -> size_t
 {
     if constexpr (hasAPI<C>) {
         x.helper();

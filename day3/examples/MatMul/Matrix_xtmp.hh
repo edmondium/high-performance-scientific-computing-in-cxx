@@ -4,7 +4,16 @@
 #include "MatrixView.hh"
 #include <random>
 
-class matrix : public MatrixView<matrix> {
+template <class T>
+using storage = std::vector<T>;
+
+// To use a vector with cache aligned heap storage, use the
+// definition below for "storage".
+// #include <tbb/cache_aligned_allocator.h>
+// template <class T>
+// using storage = std::vector<T, tbb::cache_aligned_allocator<T>> dat;
+
+class matrix : public MatrixView<matrix, double> {
 public:
     using value_type = double;
     auto nrows_() const -> size_t { return nr; }
@@ -27,7 +36,7 @@ public:
     matrix() = default;
     matrix(const matrix&) = default;
     matrix(matrix&&) = default;
-    using MatrixView<matrix>::operator=;
+    using MatrixView<matrix, double>::operator=;
     auto operator=(matrix m) -> matrix&
     {
         swap(m);
@@ -71,6 +80,6 @@ public:
         std::generate(dat.begin(), dat.end(), gen);
     }
 private:
-    std::vector<double> dat;
+    storage<double> dat;
     size_t nr{ 1 }, nc{ 1 };
 };

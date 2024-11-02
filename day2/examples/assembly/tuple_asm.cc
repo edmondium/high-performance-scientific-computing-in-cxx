@@ -1,7 +1,7 @@
 #include <array>
 #include <tuple>
 
-struct alignas(128) four {
+struct alignas(64) four {
     std::array<double, 4> dat;
 };
 
@@ -11,7 +11,7 @@ using argtype = four;
 template <int N>
 auto get(four f) { return std::get<N>(f.dat); }
 
-auto square(argtype num) -> argtype
+auto square(const argtype& num) -> argtype
 {
     return { get<0>(num) * get<0>(num),
         get<1>(num) * get<1>(num),

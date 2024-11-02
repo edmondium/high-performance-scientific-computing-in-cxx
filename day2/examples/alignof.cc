@@ -1,19 +1,24 @@
 #include <iostream>
+#include <cxx20format>
 
-int main()
+auto main() -> int
 {
     class A {
         char c;
         double x;
         int d;
     };
-    std::cout << "Alignment and size of char " << alignof(char) << ", " << sizeof(char) << "\n";
-    std::cout << "Alignment and size of int  " << alignof(int) << ", " << sizeof(int) << "\n";
-    std::cout << "Alignment and size of short " << alignof(short) << ", " << sizeof(short) << "\n";
-    std::cout << "Alignment and size of float " << alignof(float) << ", " << sizeof(float) << "\n";
-    std::cout << "Alignment and size of double " << alignof(double) << ", " << sizeof(double) << "\n";
-    std::cout << "Alignment and size of long " << alignof(long) << ", " << sizeof(long) << "\n";
-    std::cout << "Alignment and size of long double " << alignof(long double) << ", " << sizeof(long double) << "\n";
-    std::cout << "Alignment and size of long long " << alignof(long long) << ", " << sizeof(long long) << "\n";
-    std::cout << "Alignment and size of A " << alignof(A) << ", " << sizeof(A) << "\n";
+    auto report = [](std::string_view tpname, size_t size, size_t alignment) {
+        std::cout << format("Type = {:>16}, alignment = {:>3}, size = {:<4}\n",
+            tpname, alignment, size);
+    };
+    report("char", sizeof(char), alignof(char));
+    report("int", sizeof(int), alignof(int));
+    report("short", sizeof(short), alignof(short));
+    report("float", sizeof(float), alignof(float));
+    report("double", sizeof(double), alignof(double));
+    report("long", sizeof(long), alignof(long));
+    report("long double", sizeof(long double), alignof(long double));
+    report("long long", sizeof(long long), alignof(long long));
+    report("(class)A", sizeof(A), alignof(A));
 }

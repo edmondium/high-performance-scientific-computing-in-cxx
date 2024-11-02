@@ -4,7 +4,7 @@
 #include <immintrin.h>
 #include <cassert>
 
-auto get_alignment(const void* ptr) -> unsigned
+inline auto get_alignment(const void* ptr) -> unsigned
 {
     auto n = reinterpret_cast<unsigned long>(ptr);
     return (-n) & n;

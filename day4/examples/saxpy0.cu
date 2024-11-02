@@ -8,7 +8,7 @@
 
 using namespace thrust::placeholders;
 
-int main()
+auto main() -> int
 {
     std::random_device seed;
     std::mt19937_64 engine{seed()};

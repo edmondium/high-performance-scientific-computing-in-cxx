@@ -1,10 +1,10 @@
 #include "MatrixView.hh"
+#include "CountingIterator.hh"
 #include "cache_props.hh"
 #include <tuple>
 #include <vector>
 #include <random>
 #include <thread>
-#include "CountingIterator.hh"
 #include <algorithm>
 #include <execution>
 
@@ -26,7 +26,7 @@ auto ran01() -> double
 }
 
 template <class VT, size_t N>
-class alignas(CACHELINE_SIZE) FixedSizeMatrix : public MatrixView<FixedSizeMatrix<VT, N>> {
+class alignas(CACHELINE_SIZE) FixedSizeMatrix : public MatrixView<FixedSizeMatrix<VT, N>, VT> {
     VT d[N * N];
 
 public:
@@ -35,9 +35,9 @@ public:
     constexpr auto ncols_() const noexcept -> size_t { return N; }
     constexpr auto row_(size_t i) -> value_type* { return &d[i * N]; }
     constexpr auto row_(size_t i) const -> const value_type* { return &d[i * N]; }
-    auto operator()(size_t i, size_t j) const -> value_type { return row_(i)[j]; }
+    auto operator()(size_t i, size_t j) const -> const value_type& { return row_(i)[j]; }
     auto operator()(size_t i, size_t j) -> value_type& { return row_(i)[j]; }
-    using MatrixView<FixedSizeMatrix<VT, N>>::operator=;
+    using MatrixView<FixedSizeMatrix<VT, N>, VT>::operator=;
 };
 
 class matrix {
@@ -78,7 +78,9 @@ public:
     }
     void random_fill()
     {
-        tbb::parallel_for(0ul, dat.size(),[&](auto i) {
+        std::for_each(std::execution::par,
+	              algo_counter(0UL), algo_counter(dat.size()),
+		      [&](auto i) {
             for (size_t j = 0; j < dat[i].nrows(); ++j) {
                 for (size_t k = 0; k < dat[i].ncols(); ++k) {
                     dat[i](j, k) = ran01();
@@ -103,7 +105,7 @@ public:
     }
     auto operator=(double x) -> matrix&
     {
-        for (auto i = 0ul; i < dat.size(); ++i)
+        for (auto i = 0UL; i < dat.size(); ++i)
             dat[i] = x;
         return *this;
     }
@@ -134,8 +136,8 @@ private:
 void matrix::add_blockwise_product(const matprod& p)
 {
     const auto nblk = nr / block_width;
-    std::for_each(CountingIterator<size_t>{},
-        CountingIterator<size_t>{ nblk * nblk },
+    std::for_each(std::execution::par, algo_counter(0UL),
+        algo_counter(nblk * nblk),
         [&](auto ijb) {
             auto [ib, jb] = std::ldiv(ijb, nblk);
                 for (size_t kb = 0; kb < nblk; ++kb) {

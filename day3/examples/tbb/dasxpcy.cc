@@ -3,20 +3,23 @@
 #include <string>
 #include <iostream>
 #include <random>
+#include <vector>
+#include <span>
 #include <tbb/tbb.h>
 
-void dasxpcy_tbb(double a, const std::vector<double>& x, std::vector<double>& y)
+void dasxpcy_tbb(double a, std::span<const double> x, std::span<double> y)
 {
-    tbb::parallel_for(tbb::blocked_range<size_t>(0, x.size()), [&](tbb::blocked_range<size_t> r) {
+    tbb::parallel_for(tbb::blocked_range(0UL, x.size()), [&](auto&& r) {
          for (size_t i = r.begin(); i != r.end(); ++i) {
              y[i] = a * sin(x[i]) + cos(y[i]);
         }
     });
 }
 
-void dasxpcy_serial(double a, const std::vector<double>& x, std::vector<double>& y)
+void dasxpcy_serial(double a, std::span<const double> x, std::span<double> y)
 {
-    std::transform(x.begin(), x.end(), y.begin(), y.begin(), [a](auto lhs, auto rhs) {
+    std::transform(x.begin(), x.end(), y.begin(), y.begin(),
+		   [a](auto lhs, auto rhs) {
         return a * sin(lhs) + cos(rhs);
     });
 }
@@ -38,8 +41,8 @@ auto main(int argc, char* argv[]) -> int
         std::cout << "Filling up input array with random numbers \n";
         auto t0 = std::chrono::high_resolution_clock::now();
         tbb::parallel_invoke(
-            [&]{ tbb::parallel_for(0ul, x.size(),[&](auto i){ x[i] = random_number_generator(); }); },
-            [&]{ tbb::parallel_for(0ul, y1.size(),[&](auto i){ y1[i] = random_number_generator(); }); }
+            [&]{ tbb::parallel_for(0UL, x.size(),[&](auto i){ x[i] = random_number_generator(); }); },
+            [&]{ tbb::parallel_for(0UL, y1.size(),[&](auto i){ y1[i] = random_number_generator(); }); }
         );
         y2 = y1;
         auto t1 = std::chrono::high_resolution_clock::now();

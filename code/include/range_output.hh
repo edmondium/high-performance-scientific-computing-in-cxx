@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <iosfwd>
-#include <ranges>
+#include <cxx20ranges>
 #include <string>
 
 namespace output {
@@ -49,14 +49,11 @@ std::ostream& operator<<(std::ostream& os, const ArrayLike auto& c)
 }
 
 template <class T>
-requires(not StringLike<T> and std::ranges::range<T>)
+requires(not StringLike<T> and sr::range<T>)
     std::ostream&
     operator<<(std::ostream& os, T&& r)
 {
-    using namespace std::ranges;
     os << "[";
-    //if (begin(r) != end(r))
-    //    write_possibly_quoted(os, *begin(r));
     for (auto el : r) {
         write_possibly_quoted(os, el);
         os << ", ";
@@ -94,15 +91,15 @@ rprinter<T> operator<<(std::ostream& os, rprinter<T> r)
     return { r };
 }
 template <class T>
-std::ostream& operator<<(rprinter<T> vp, std::ranges::range auto&& t)
+std::ostream& operator<<(rprinter<T> vp, sr::range auto&& t)
 {
     if constexpr (std::is_same_v<T, void>) {
         for (auto&& el : t)
             vp.stream() << el;
     } else {
-        if (not std::ranges::empty(t)) {
-            vp.stream() << *std::ranges::begin(t);
-            std::ranges::for_each(t | std::views::drop(1), [&vp](auto&& el) {
+        if (not sr::empty(t)) {
+            vp.stream() << *sr::begin(t);
+            sr::for_each(t | sv::drop(1), [&vp](auto&& el) {
                 vp.stream() << vp.separator() << el;
             });
         }

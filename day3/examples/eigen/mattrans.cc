@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-int main(int argc, char* argv[])
+auto main(int argc, char* argv[]) -> int
 {
     int N{ 0 }, nrep{ 10 };
     bool err{ false };

@@ -1,0 +1,11 @@
+#include <version>
+#ifdef __cpp_lib_format
+  #include<format>
+  using std::format;
+#elif __has_include (<fmt/format.h>)
+  #define FMT_HEADER_ONLY
+  #include<fmt/core.h>
+  using fmt::format;
+  #warning Using external format.h header from the fmt library.
+#endif
+

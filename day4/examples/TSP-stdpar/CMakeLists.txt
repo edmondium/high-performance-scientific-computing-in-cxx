@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.20)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+project(TSP-stdpar CXX)
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID}")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "NVHPC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdpar")
+endif()
+include(cmake/CPM.cmake)
+CPMAddPackage("gh:bfgroup/Lyra#1.6.1")
+add_executable(tsp TSP.cc)
+target_link_libraries(tsp PRIVATE bfg::lyra)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang"
+		OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+find_package(TBB REQUIRED)
+target_link_libraries(tsp PRIVATE TBB::tbb TBB::tbbmalloc)
+endif()
+

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <type_traits>
+#include <concepts>
 
 auto message(auto&& x)
 {
@@ -7,7 +7,7 @@ auto message(auto&& x)
 }
 
 template <class T>
-concept is_a_number = std::is_integral_v<T> or std::is_floating_point_v<T>;
+concept is_a_number = std::integral<T> or std::floating_point<T>;
 
 auto main() -> int
 {

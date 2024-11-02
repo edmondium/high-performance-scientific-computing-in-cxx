@@ -1,0 +1,14 @@
+#include <version>
+#ifdef __cpp_lib_ranges
+  #include<ranges>
+  namespace sr = std::ranges;
+  namespace sv = std::views;
+#elif __has_include (<range/v3/all.hpp>)
+  #include<range/v3/all.hpp>
+  namespace sr = ranges;
+  namespace sv = ranges::views;
+  #warning Using rangesv3 3rd party library
+#else
+#error No suitable header for C++20 ranges was found!
+#endif
+

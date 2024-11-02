@@ -18,7 +18,7 @@ public:
     {
         return v[i * nc + j];
     }
-    auto operator()(size_t i, size_t j) const -> T
+    auto operator()(size_t i, size_t j) const -> const T&
     {
         return v[i * nc + j];
     }
@@ -37,7 +37,7 @@ public:
         {
             return orig[offst + i * strd];
         }
-        auto operator[](size_t i) const -> U
+        auto operator[](size_t i) const -> const U&
         {
             return orig[offst + i * strd];
         }

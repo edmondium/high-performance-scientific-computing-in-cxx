@@ -39,8 +39,8 @@ public:
     }
     auto begin() { return dat.begin(); }
     auto end() { return dat.end(); }
-    const auto begin() const { return dat.begin(); }
-    const auto end() const { return dat.end(); }
+    auto begin() const { return dat.begin(); }
+    auto end() const { return dat.end(); }
 };
 
 template <typename T1, typename T2>

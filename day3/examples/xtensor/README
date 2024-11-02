@@ -1,0 +1,19 @@
+To compile with CMake, please do as follows:
+
+Ensure that CMAKE_PREFIX_PATH contains
+the installation path of xtensor or
+xtensor-stack.
+
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+
+
+To compile without CMake, we need to link with
+openblas, pthread and gfortran.
+
+For example,
+
+G xt1.cc -lopenblas -pthread -lgfortran
+

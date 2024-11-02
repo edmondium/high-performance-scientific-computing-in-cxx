@@ -1,0 +1,13 @@
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-march=core-avx2 ..
+make
+
+
+If you want to use a different compiler, use
+for example,
+
+CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Release  -DCMAKE_CXX_FLAGS=-march=core-avx2 ..
+and so on.
+
+

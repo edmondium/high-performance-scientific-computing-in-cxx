@@ -1,13 +1,16 @@
 #include <iostream>
-#include <ranges>
+#include <cxx20ranges>
 #include <span>
 #include <vector>
 #include <valarray>
 #include <list>
 #include <array>
 #include <string>
+// Defined in cxx20ranges...
+// namespace sr = std::ranges;
+// namespace sv = sr::views;
 
-auto sum(std::ranges::input_range auto&& seq)
+auto sum(sr::input_range auto&& seq)
 {
     std::iter_value_t<decltype(seq)> ans{};
     for (auto x : seq) ans += x;
