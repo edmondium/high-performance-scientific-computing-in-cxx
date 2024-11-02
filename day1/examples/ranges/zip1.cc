@@ -1,10 +1,5 @@
-// Needs C++23. We don't have a sufficiently discerning
-// redirecting header. So, we just include <ranges> and
-// hope that the compiler has it. GCC 13.1 has an
-// implementation.
-#include <cxx20format>
-#include <iostream>
 #include <ranges>
+#include <print>
 #include <string>
 #include <vector>
 
@@ -12,11 +7,11 @@ auto main() -> int
 {
     namespace sr = std::ranges;
     namespace sv = sr::views;
-    using namespace std::string_literals;
+    using namespace std::literals;
     std::vector v { "apples"s, "oranges"s, "mangos"s, "bananas"s };
 
     for (auto&& [i, fruits] : sv::zip(v, sv::reverse(v)) | sv::enumerate) {
 	auto&& [fruit1, fruit2] = fruits;
-        std::cout << format("{}: {} <-> {}\n", i, fruit1, fruit2);
+        std::print("{}: {} <-> {}\n", i, fruit1, fruit2);
     }
 }

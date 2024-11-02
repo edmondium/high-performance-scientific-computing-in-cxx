@@ -1,6 +1,5 @@
 #include "timeit.hh"
 #include <array>
-#include <iostream>
 #include <thread>
 
 constexpr auto WORKLOAD = 1000000000UL;

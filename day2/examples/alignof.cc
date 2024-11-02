@@ -1,5 +1,4 @@
-#include <iostream>
-#include <cxx20format>
+#include <print>
 
 auto main() -> int
 {
@@ -9,7 +8,7 @@ auto main() -> int
         int d;
     };
     auto report = [](std::string_view tpname, size_t size, size_t alignment) {
-        std::cout << format("Type = {:>16}, alignment = {:>3}, size = {:<4}\n",
+        std::print("Type = {:>16}, alignment = {:>3}, size = {:<4}\n",
             tpname, alignment, size);
     };
     report("char", sizeof(char), alignof(char));

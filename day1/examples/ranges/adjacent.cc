@@ -1,15 +1,12 @@
-#include <iostream>
-#include <vector>
+#include <print>
 #include <ranges>
-#include <cxx20format>
 
 auto main() -> int
 {
-    namespace sr = std::ranges;
-    namespace sv = sr::views;
+    namespace sv = std::ranges::views;
     for (auto [i0, i1, i2]:
 	    sv::iota(0UL, 15UL) | sv::adjacent<3UL>) {
-        std::cout << format("{}, {}, {}\n", i0, i1, i2);
+        std::print("{}, {}, {}\n", i0, i1, i2);
     }
 }
 

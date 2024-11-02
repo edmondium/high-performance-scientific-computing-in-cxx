@@ -22,7 +22,7 @@ struct uloop {
 };
 
 template <class T>
-class AtomMatrix {
+class alignas(CACHELINE_SIZE) AtomMatrix {
 public:
     using row_block_type = simdType<T>;
     static constexpr auto size() { return row_block_type::size; }

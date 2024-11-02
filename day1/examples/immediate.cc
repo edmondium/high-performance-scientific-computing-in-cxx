@@ -1,8 +1,12 @@
 #include <algorithm>
 #include <array>
-#include <iostream>
-#include <iterator>
+#include <print>
 #include <ranges>
+#include <iterator>
+#include <iostream>
+
+namespace sr = std::ranges;
+namespace sv = sr::views;
 
 template <class T>
 consteval auto sqr(T x) { return x * x; }
@@ -11,9 +15,7 @@ auto main(int argc, char* argv[]) -> int
 {
     std::array<double, sqr(11)> A;
     A.fill(1.1);
-
-    std::ranges::copy(A, std::ostream_iterator<double>(std::cout, ", "));
-    std::cout << "\n";
-    std::cout << "Square of 33 is " << sqr(33) << "\n";
-    // std::cout << "Square of the number of arguments is " << sqr(argc) << "\n";
+    sr::copy(A, std::ostream_iterator<double> {std::cout, ", "});
+    std::print("\nSquare of 33 is {}\n", sqr(33));
+    // std::print("\nSquare of the number of arguments is {}\n", sqr(argc));
 }

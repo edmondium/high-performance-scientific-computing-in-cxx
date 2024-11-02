@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <chrono>
-#include <cxx20format>
-#include <cxx20ranges>
+#include <format>
+#include <ranges>
 #include <iostream>
 #include <xtensor-blas/xlinalg.hpp>
 #include <xtensor/xio.hpp>
@@ -10,9 +10,8 @@
 auto main(int argc, char* argv[]) -> int
 {
     auto size = (argc > 1 ? std::stoul(argv[1]) : 4);
-    // defined in cxx20ranges...
-    // namespace sv = std::views;
-    // namespace sr = std::ranges;
+    namespace sv = std::views;
+    namespace sr = std::ranges;
     auto examples = sv::iota(0UL, 1000UL)
         | sv::transform([=](auto inp) { // generate a random symmetric matrix
               xt::xarray<double> mat = xt::random::rand<double>({ size, size });
@@ -27,7 +26,7 @@ auto main(int argc, char* argv[]) -> int
               // We have to remember to take the 0'th element to convert that
               // into a scalar entity.
               auto trace = xt::eval(xt::linalg::trace(mat))[0];
-              std::cout << format("Sum of eigenvalues = {}, trace = {}, diff = {}\n",
+              std::cout << std::format("Sum of eigenvalues = {}, trace = {}, diff = {}\n",
                   eigsum.real(), trace, eigsum.real() - trace);
               return fabs(xt::real(eigsum) - trace);
           });

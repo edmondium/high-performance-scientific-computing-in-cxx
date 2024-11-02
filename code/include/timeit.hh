@@ -10,12 +10,12 @@ void timeit(std::string_view testname, unsigned reps, Callable&& f, Args&&... ar
 {
     using namespace std::chrono;
     double tmin {}, tmax {}, ttot {}, t2tot {};
-    for (auto i = 0u; i < reps; ++i) {
+    for (auto i = 0U; i < reps; ++i) {
         auto start = high_resolution_clock::now();
         std::forward<Callable>(f)(std::forward<Args>(args)...);
         auto end = high_resolution_clock::now();
         auto intv = duration<double>(end - start).count();
-        if (i == 0u) {
+        if (i == 0U) {
             tmin = tmax = intv;
         } else {
             tmax = std::max(tmax, intv);

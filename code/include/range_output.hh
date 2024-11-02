@@ -2,10 +2,13 @@
 #include <algorithm>
 #include <iomanip>
 #include <iosfwd>
-#include <cxx20ranges>
+#include <ranges>
 #include <string>
 
 namespace output {
+    namespace sr = std::ranges;
+    namespace sv = sr::views;
+
 template <class C>
 concept RawArray = std::is_array_v<C>;
 template <class C>

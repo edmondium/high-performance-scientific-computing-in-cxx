@@ -1,5 +1,5 @@
 #include <array>
-#include <iostream>
+#include <print>
 #include <concepts>
 
 enum class ISA { SSE,
@@ -24,8 +24,8 @@ struct alignas(vec_bytes<target_isa>) simd_t {
 
 auto main() -> int
 {
-    std::cout << "Alignment for simd type (float) : " << alignof(simd_t<float>) << " with " 
-              << simd_t<float>::nelems << " elements in vector\n";
-    std::cout << "Alignment for simd type (double) : " << alignof(simd_t<double>) << " with " 
-              << simd_t<double>::nelems << " elements in vector\n";
+    std::print("Alignment for simd type (float) : {} with {} elements in vector\n", 
+		    alignof(simd_t<float>), simd_t<float>::nelems); 
+    std::print("Alignment for simd type (double) : {}  with {} elements in vector\n",
+		    alignof(simd_t<double>), simd_t<double>::nelems); 
 }

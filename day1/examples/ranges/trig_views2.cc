@@ -1,14 +1,14 @@
 // examples/trig_views2.cc
 #include <iostream>
-#include <cxx20ranges>
+#include <ranges>
 #include <algorithm>
 #include <cmath>
 #include <limits>
 
 auto main() -> int
 {
-    //namespace sr = std::ranges;
-    //namespace sv = std::views;
+    namespace sr = std::ranges;
+    namespace sv = std::views;
     const auto pi = std::acos(-1);
     constexpr auto npoints = 100UL;
     auto is_bad = [=](double x){ return x > 0; };
@@ -19,7 +19,7 @@ auto main() -> int
                                    return output;
                                } )
                | sv::transform([ ](auto x)  { 
-                                   auto output = sin(x) * sin(x) - 0.99;
+                                   auto output = std::sin(x) * std::sin(x) - 0.99;
                                    std::cout << "Input = " << x << "\toutput = " << output << "\n"; 
                                    return output;
                                } );

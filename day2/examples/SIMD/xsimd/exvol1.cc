@@ -19,7 +19,7 @@ template <class T>
 constexpr auto sqr(T&& x) noexcept { return x * x; }
 
 template <class T>
-using vector_type = std::vector<T, xsimd::aligned_allocator<T>>;
+using vector_type = std::vector<T, xsimd::aligned_allocator<T, 64UL>>;
 
 template <class T>
 auto Vexv(T r2, T sigsa12) -> T

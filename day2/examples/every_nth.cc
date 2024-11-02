@@ -1,6 +1,5 @@
 #include <chrono>
-#include <iomanip>
-#include <iostream>
+#include <print>
 #include <vector>
 
 auto main() -> int
@@ -17,8 +16,8 @@ auto main() -> int
         }
         auto end = std::chrono::high_resolution_clock::now();
         tot += A[size / 2 + step];
-        std::cout << std::setw(4) << std::right << step << " "
-                  << std::chrono::duration<double>(end - start).count() / nrep << "\n";
+	std::print("{: >4} {}\n", step,
+			std::chrono::duration<double>(end - start).count() / nrep);
     }
-    std::cout << "Total = " << tot << "\n";
+    std::print("Total = {}\n", tot);
 }

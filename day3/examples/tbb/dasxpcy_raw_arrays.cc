@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <chrono>
-#include <functional>
 #include <iostream>
 #include <random>
 #include <tbb/tbb.h>
@@ -28,24 +27,20 @@ auto random_number_generator() -> double
     return dist(rd);
 }
 
-auto main() -> int
+auto main(int argc, char* argv[]) -> int
 {
     try {
-        const size_t N = 100000000;
-        std::mt19937_64 engine;
-        std::uniform_real_distribution<> dist{ 0, 1 };
+        const size_t N = (argc == 1 ? 100'000'000 : std::stoul(argv[1]));
         double* x = new double[N];
         double* y1 = new double[N];
         double* y2 = new double[N];
         constexpr double a = 0.35;
-        auto gen = std::bind(dist, std::ref(engine));
-        std::cout << "Filling up input array with random numbers serially\n";
+        std::cout << "Filling up input array with random numbers\n";
         auto t0 = std::chrono::high_resolution_clock::now();
         tbb::parallel_invoke(
-            [&]{ tbb::parallel_for(0ul, N,[&](auto i){ x[i] = random_number_generator(); }); },
-            [&]{ tbb::parallel_for(0ul, N,[&](auto i){ y2[i] = y1[i] = random_number_generator(); }); }
-        );
- 
+            [&] { tbb::parallel_for(0UL, N, [&](auto i) { x[i] = random_number_generator(); }); },
+            [&] { tbb::parallel_for(0UL, N, [&](auto i) { y2[i] = y1[i] = random_number_generator(); }); });
+
         auto t1 = std::chrono::high_resolution_clock::now();
         std::cout << "Filling arrays took : " << std::chrono::duration<double>(t1 - t0).count() << " seconds\n";
         std::cout << "Calling daxpy serial now ...\n";
@@ -77,4 +72,3 @@ auto main() -> int
         std::cout << "An exception not deriving from std::exception was thrown somewhere!\n";
     }
 }
-

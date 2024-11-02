@@ -29,7 +29,7 @@ auto ran01() -> double
     return dist(engine);
 }
 struct BlockMatrix {
-    static constexpr auto nblk = 16UL;
+    static constexpr auto nblk = 8UL;
     using value_type = double;
     std::array<AtomMatrix<double>, nblk * nblk> blks;
     auto block(size_t i, size_t j) -> AtomMatrix<double>&

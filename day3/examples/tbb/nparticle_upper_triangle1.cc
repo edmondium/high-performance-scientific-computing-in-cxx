@@ -2,8 +2,6 @@
 #include <chrono>
 #include <iostream>
 #include <random>
-#include <tbb/enumerable_thread_specific.h>
-#include <tbb/task_scheduler_init.h>
 #include <tbb/tbb.h>
 #include <vector>
 
@@ -80,11 +78,12 @@ double e_par()
 
 int main(int argc, char* argv[])
 {
-    auto nthr = tbb::task_scheduler_init::default_num_threads();
+    auto nthr = 1;
     if (argc > 1)
         nthr = std::stoul(argv[1]);
-    tbb::task_arena executor;
-    executor.initialize(nthr);
+
+    tbb::task_arena executor{nthr};
+    // executor.initialize(nthr);
     auto gen = [
                    engine = std::mt19937_64{std::random_device{}()},
                    dist = std::uniform_real_distribution<> { -5, 5 }
@@ -111,5 +110,5 @@ int main(int argc, char* argv[])
     auto tpar = std::chrono::duration<double>(t1 - t0).count();
     std::cout << "Parallel energy evaluation took : " << tpar << " seconds\n";
     std::cout << "Total error = " << fabs(eser - epar) << '\n';
-    std::cout << "Speed up in TBB version relative to serial version = " << 100 * tser / tpar << std::endl;
+    std::cout << "Speed up in TBB version relative to serial version = " << tser / tpar << "\n";
 }

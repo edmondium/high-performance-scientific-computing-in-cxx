@@ -8,7 +8,7 @@
 auto main() -> int
 {
     // generate 32 M random numbers on the host
-    thrust::host_vector<int> h_vec(1 << 16);
+    thrust::host_vector<int> h_vec(1 << 18);
     std::cout << "Filling host vector of size " << h_vec.size()
               << " with random numbers\n";
     thrust::generate(h_vec.begin(), h_vec.end(), rand);

@@ -1,6 +1,5 @@
 #include <chrono>
-#include <cxx20format>
-#include <iostream>
+#include <print>
 #include <span>
 #include <string>
 
@@ -9,11 +8,12 @@ inline auto f(double xx, unsigned long n, std::span<volatile double> a) -> doubl
     volatile double x { xx };
     for (auto i = 0UL; i < n; ++i) {
         // Inner loop, version 1
+/*
         for (auto j = 0UL; j < a.size(); ++j)
             x = x * a[j];
+*/
 
         // Inner "loop", version 2
-/*
         {
             double c[6];
             for (unsigned j = 0u; j < 6u; ++j)
@@ -24,7 +24,6 @@ inline auto f(double xx, unsigned long n, std::span<volatile double> a) -> doubl
             c[1] *= c[2];
             x = x * c[1];
         }
-*/
     }
     return x;
 }
@@ -41,7 +40,7 @@ auto main(int argc, char* argv[]) -> int
         y += f(x, N, { a });
         auto t1 = std::chrono::high_resolution_clock::now();
         auto timetaken = std::chrono::duration<double>(t1 - t0).count();
-        std::cout << fmt::format("{:<8}\t{:>10.8f}\t{:>8.2f} GFlops, tot = {}\n",
+        std::print("{:<8}\t{:>10.8f}\t{:>8.2f} GFlops, tot = {}\n",
             j, timetaken, (12 * N + 1) / timetaken / 1.0e9, y);
     }
 }

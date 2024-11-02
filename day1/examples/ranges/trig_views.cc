@@ -3,20 +3,12 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <ranges>
 
-#include <cxx20ranges>
-
-// Compatibility header in your include path
-// Replace with <ranges> if you only work with
-// g++ or if your version of clang++ already
-// has ranges algorithms implemented.
-
-int main()
+auto main() -> int
 {
-//    namespace sr = std::ranges;
-//    namespace sv = std::views;
-//  Uncomment the above two lines if you are not using the
-//  compatibility header above.
+    namespace sr = std::ranges;
+    namespace sv = std::views;
 
     const auto pi = std::acos(-1);
     constexpr auto npoints = 10'000'00UL;
@@ -25,7 +17,7 @@ int main()
          return std::lerp(0., 2*pi, idx * 1.0 / npoints);
     };
     auto x_to_fx = [ ](double x) -> double {
-         return sin(x) * sin(x) + cos(x) * cos(x) - 1.0;
+         return std::sin(x) * std::sin(x) + std::cos(x) * std::cos(x) - 1.0;
     };
     auto is_bad = [=](double x){ return std::fabs(x) > eps; };
     auto res = sv::iota(0UL, npoints) | sv::transform(to_0_2pi)

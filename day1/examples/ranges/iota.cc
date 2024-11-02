@@ -1,13 +1,10 @@
 // examples/iota.cc
 #include <iostream>
-#include <cxx20ranges>
-// Compatibility header.
+#include <ranges>
 
 auto main() -> int
 {
-    // namespace sv = std::views;
-    // Uncomment the line above if not using
-    // the compatibility header.
+    namespace sv = std::ranges::views;
     for (auto i : sv::iota(1UL)) {
         if ((i + 1) % 10000UL == 0UL) {
             std::cout << i << ' ';

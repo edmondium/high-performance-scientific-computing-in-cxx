@@ -8,7 +8,7 @@ class Vbose {
 public:
     Vbose()
     {
-        std::cout << "Default constructor of object at " << ((size_t)this) << "\n";
+        std::cout << "Default construct @" << ((size_t)this) << "\n";
     }
     inline auto getval() const { return nm; }
     inline void setval(const std::string& nw) { nm = nw; }
@@ -16,27 +16,24 @@ public:
     Vbose(const Vbose& v)
         : nm(v.nm)
     {
-        std::cout << "Copy constructor of object at " << ((size_t)this) << ". ";
-        std::cout << "Source for copy is at " << ((size_t)&v) << "\n";
+        std::cout << "Copy construct @" << ((size_t)this) << " from @" << ((size_t)&v) << "\n";
     }
     Vbose(Vbose&& v) noexcept
         : nm(std::move(v.nm))
     {
-        std::cout << "Move constructor of object at " << ((size_t)this) << ". ";
-        std::cout << "Source for move is at " << ((size_t)&v) << "\n";
+        std::cout << "Move construct @" << ((size_t)this) << " from @" << ((size_t)&v) << "\n";
     }
 
     Vbose(std::string gs) noexcept
         : nm(gs)
     {
-        std::cout << "Constructor of object at " << ((size_t)this) << ",";
-        std::cout << " using string " << std::quoted(gs) << "\n";
+        std::cout << "Construct @" << ((size_t)this) << ", using string " << std::quoted(gs) << "\n";
     }
 
     auto operator=(const Vbose& v) -> Vbose&
     {
-        std::cout << "Assignment operator: LHS @ " << ((size_t)this) << "(" << nm << "), ";
-        std::cout << "RHS @ " << ((size_t)&v) << "(" << std::quoted(v.nm) << ")\n";
+        std::cout << "Assign to @ " << ((size_t)this) << "(" << nm << "), "
+                  << " from @" << ((size_t)&v) << "(" << std::quoted(v.nm) << ")\n";
         if (this != &v) {
             nm = v.nm;
         }
@@ -45,15 +42,15 @@ public:
 
     auto operator=(Vbose&& v) -> Vbose&
     {
-        std::cout << "Move assignment operator: LHS @ " << ((size_t)this) << "(" << std::quoted(nm) << "), ";
-        std::cout << "RHS @ " << ((size_t)&v) << "(" << std::quoted(v.nm) << ")\n";
+        std::cout << "Move assign to @" << ((size_t)this) << "(" << std::quoted(nm) << "), "
+                  << " from @" << ((size_t)&v) << "(" << std::quoted(v.nm) << ")\n";
         std::swap(nm, v.nm);
         return *this;
     }
 
     ~Vbose()
     {
-        std::cout << "Destructor of object at " << ((size_t)this) << " with data " << std::quoted(nm) << "\n";
+        std::cout << "Destruct @" << ((size_t)this) << " with data " << std::quoted(nm) << "\n";
     }
 
     auto operator+(const Vbose& v) -> Vbose
@@ -67,7 +64,7 @@ public:
     }
     void value(const std::string& vl)
     {
-	std::cout << "Changing internal value of object at " << ((size_t)this) << " from " << nm << " to " << vl << "\n";
+	std::cout << "Changing value of object @" << ((size_t)this) << " from " << nm << " to " << vl << "\n";
 	nm = vl;
     }
 

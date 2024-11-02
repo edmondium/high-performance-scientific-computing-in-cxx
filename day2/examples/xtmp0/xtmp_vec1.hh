@@ -2,8 +2,7 @@
 #define XTMP_VEC_HH
 
 #include <cassert>
-//#include <vector>
-#include <memory>
+#include <vector>
 
 namespace HPCXX {
 /*
@@ -18,31 +17,28 @@ struct vecxpr {
 
 template <typename T>
 class vec : public vecxpr<vec<T>> {
-    //std::vector<T> dat;
-    std::unique_ptr<T[]> dat;
-    size_t sz{};
+    std::vector<T> dat;
 public:
     using value_type = T;
-    vec(size_t n)
-        : dat{new(static_cast<std::align_val_t>(64)) T[n]}, sz{n}
+    vec(size_t n) : dat(n)
     {
     }
     auto operator[](size_t i) const -> const T { return dat[i]; }
     auto operator[](size_t i) -> T& { return dat[i]; }
-    auto size() const -> size_t { return sz; }
+    auto size() const -> size_t { return dat.size(); }
     auto n_ops() const -> size_t { return 0; }
-    template <typename X>
+    template <class X>
     auto operator=(const vecxpr<X>& y) -> vec&
     {
-        dat.reset(new(static_cast<std::align_val_t>(64)) T[(~y).size()]);
         for (size_t i = 0; i < (~y).size(); ++i)
             dat[i] = (~y)[i];
         return *this;
     }
-    auto begin() const -> const T* { return dat.get(); }
-    auto begin() -> T* { return dat.get(); }
-    auto end() const -> const T* { return dat.get() + sz; }
-    auto end() -> T* { return dat.get() + sz; }
+
+    auto begin() const { return dat.begin(); }
+    auto begin() { return dat.begin(); }
+    auto end() const { return dat.end(); }
+    auto end() { return dat.end(); }
 };
 
 template <typename T1, typename T2>

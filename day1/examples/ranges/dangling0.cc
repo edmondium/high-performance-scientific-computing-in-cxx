@@ -1,11 +1,11 @@
 #include <string>
-#include <cxx20ranges>
+#include <ranges>
 #include <algorithm>
 #include <iostream>
 #include <vector>
 
-//namespace sr = std::ranges;
-//namespace sv = std::views;
+namespace sr = std::ranges;
+namespace sv = std::views;
 
 auto get_vec()
 {

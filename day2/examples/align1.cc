@@ -15,7 +15,7 @@ template <> constexpr auto vec_bytes<ISA::MIC> = 64UL;
 
 constexpr ISA target_isa = ISA::AVX512;
 
-template <class T> /* requires std::is_arithmetic_v<T> : we leave this out deliberately here, to make it compatible with C++14 */
+template <class T> /* requires std::is_arithmetic_v<T> : here, we leave this out deliberately to make it compatible with C++14 */
 struct alignas(vec_bytes<target_isa>) simd_t {
     static_assert(vec_bytes<target_isa> % sizeof(T) == 0, "vector width must be an integral multiple of type size");
     static constexpr auto nelems = vec_bytes<target_isa> / sizeof(T);

@@ -1,9 +1,11 @@
 #include "xsimd/xsimd.hpp"
 #include <span>
+#include <vector>
+#include <iostream>
 
 using Arch = xsimd::avx2;
 
-auto sprod_explicit(std::span<const double> x,
+auto sprod_xsimd(std::span<const double> x,
                    std::span<const double> y) -> double
 {
     using b_type = xsimd::batch<double, Arch>;
@@ -23,5 +25,13 @@ auto sprod_explicit(std::span<const double> x,
         res += x[i] * y[i];
     }
     return res;
+}
+
+auto main() -> int
+{
+    constexpr auto N = 10000000UL;
+    std::vector<double> A(N, 3.), B(N, 2.);
+
+    std::cout << sprod_xsimd(A, B) << "\n";
 }
 

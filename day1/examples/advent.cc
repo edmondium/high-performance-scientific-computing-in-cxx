@@ -7,7 +7,7 @@ year. Usage:
 */
 
 #include <chrono>
-#include <cxx20format>
+#include <format>
 #include <iostream>
 
 auto current_year() -> std::chrono::year
@@ -22,7 +22,7 @@ auto main(int argc, char* argv[]) -> int
     using namespace std::chrono;
     using namespace std::chrono_literals;
     using Date = year_month_day;
-    using fmt::format;
+    using std::format;
 
     year Y { argc == 1 ? current_year() : year {std::stoi(argv[1]) }};
 

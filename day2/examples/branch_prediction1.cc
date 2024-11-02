@@ -1,14 +1,15 @@
 #include <algorithm>
 #include <chrono>
-#include <cxx20format>
-#include <cxx20ranges>
-#include <iostream>
+#include <print>
+#include <ranges>
 #include <random>
 #include <vector>
 
 auto main(int argc, char* argv[]) -> int
 {
     namespace sc = std::chrono;
+    namespace sr = std::ranges;
+    namespace sv = sr::views;
     // Generate data
     std::vector<double> a(10'000'000UL);
     auto b = a;
@@ -27,7 +28,7 @@ auto main(int argc, char* argv[]) -> int
     double thres = (argc > 1 ? std::stod(argv[1]) : 0.5);
     for (auto i = 0U; i < totiter; ++i) {
         if (i % 5U == 0U)
-            std::cout << "Wait... (remaining iterations = " << totiter - i << ")\n";
+            std::print("Wait... (remaining iterations = {})\n", totiter - i );
         // Primary loop
         for (auto j = 0U; j < a.size(); ++j) {
     // The following branch depends on c[j], which has
@@ -50,6 +51,6 @@ auto main(int argc, char* argv[]) -> int
     auto t_end = sc::high_resolution_clock::now();
     double elapsedTime = sc::duration<double>(t_end - start).count();
 
-    std::cout << "Elapsed time = " << elapsedTime << " seconds\n";
-    std::cout << format("sum1 = {}, sum2 = {}\n", sum1, sum2);
+    std::print("Elapsed time = {} seconds.\n", elapsedTime);
+    std::print("sum1 = {}, sum2 = {}\n", sum1, sum2);
 }

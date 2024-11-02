@@ -1,8 +1,8 @@
-#include "pngwriter.h"
 #include <chrono>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <span>
 #include <thrust/complex.h>
 #include <thrust/device_vector.h>
 #include <thrust/host_vector.h>
@@ -13,17 +13,20 @@ using thrust::complex;
 using image_representation = typename thrust::host_vector<unsigned char>;
 using CI = thrust::counting_iterator<size_t>;
 
-void save_png(std::string ofile, size_t width, size_t height, const image_representation& img)
+void save_pgm(std::string filename, size_t width, size_t height,
+    std::span<unsigned char> data)
 {
-    pngwriter output { static_cast<int>(width), static_cast<int>(height), 0.0, ofile.c_str() };
-    for (auto i = 0UL; i < height; ++i) {
-        for (auto j = 0UL; j < width; ++j) {
-            auto c = img[i * width + j];
-            output.plot(j + 1UL, i + 1UL, c / 255.0, c / 255.0,
-			    (static_cast<unsigned long>(c) + 50UL) / 255.0);
+    std::ofstream fout { filename };
+    fout << "P2\n"
+         << width << " " << height << " 255\n";
+    for (size_t row = 0; row < height; ++row) {
+        for (size_t col = 0; col < width; ++col) {
+            fout << (col ? " " : "")
+                 << static_cast<unsigned>(data[row * width + col]);
         }
+        fout << "\n";
     }
-    output.close();
+    fout.close();
 }
 
 auto mandel(size_t width, size_t height) -> image_representation
@@ -68,5 +71,5 @@ auto main(int argc, char* argv[]) -> int
     auto t1 = sc::high_resolution_clock::now();
     std::cout << "Generation of Mandelbrot set for image size " << width << " x " << height << " took "
               << sc::duration<double>(t1 - t0).count() << " seconds\n";
-    save_png("output.png", width, height, img);
+    save_pgm("output.pgm", width, height, std::span(img.data(), img.size()));
 }

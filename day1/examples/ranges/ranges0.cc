@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ranges>
 #include <span>
 #include <vector>
 #include <valarray>
@@ -6,16 +7,8 @@
 #include <array>
 #include <string>
 
-#include <cxx20ranges>
-// Compatibility header in your include path
-// Replace with <ranges> if you only work with
-// g++ or if your version of clang++ already
-// has ranges algorithms implemented.
-
-//    namespace sr = std::ranges;
-//    namespace sv = std::views;
-//  Uncomment the above two lines if you are not using the
-//  compatibility header above.
+namespace sr = std::ranges;
+namespace sv = sr::views;
 
 auto sum(sr::input_range auto&& seq)
 {
@@ -24,9 +17,9 @@ auto sum(sr::input_range auto&& seq)
     return ans;
 }
 
-int main()
+auto main() -> int
 {
-    using namespace std::string_literals;
+    using namespace std::literals;
     std::cout << "vector : " << sum(std::vector({ 9,8,7,2 } )) << "\n";
     std::cout << "list : " << sum(std::list({ 9,8,7,2 } )) << "\n";
     std::cout << "valarray : " << sum(std::valarray({ 9,8,7,2 } )) << "\n";

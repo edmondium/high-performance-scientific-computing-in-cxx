@@ -1,23 +1,22 @@
-#include "range_output.hh"
 #include <fstream>
-#include <iostream>
+#include <print>
 #include <iterator>
-#include <cxx20ranges>
+#include <ranges>
 #include <string>
 
-// namespace sr = std::ranges;
-// namespace sv = std::views;
+namespace sr = std::ranges;
+namespace sv = std::views;
 
-int main(int argc, char* argv[])
+auto main(int argc, char* argv[]) -> int
 {
-    using namespace output;
     if (argc < 2) {
-        std::cerr << "Usage:\n"
-                  << argv[0] << " input_file_name\n";
+        std::print(R"(Usage:
+{} input_file_name
+)", argv[0]);
         return 1;
     }
     auto gerund = [](std::string_view w) { return w.ends_with("ing"); };
     std::ifstream fin { argv[1] };
     auto in = sr::istream_view<std::string>(fin);
-    std::cout << (in | sv::filter(gerund)) << "\n";
+    std::print("{}\n", in | sv::filter(gerund));
 }

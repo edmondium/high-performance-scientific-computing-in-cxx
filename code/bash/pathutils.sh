@@ -2,7 +2,7 @@
 
 # ***********************************************
 #  High-performance scientific computing in C++
-#  29 May -- 02 June 2023
+#  28 -- 31 October 2024
 #  Jülich Supercomputing Centre
 # ***********************************************
 

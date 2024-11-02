@@ -1,5 +1,7 @@
-#include <chrono>
 #include <execution>
+
+#include <algorithm>
+#include <chrono>
 #include <iostream>
 #include <numeric>
 #include <random>
@@ -23,15 +25,15 @@ auto main() -> int
             policy, x.begin(), x.end(), y.begin(), 0.0,
             std::plus<double> {},
             [a](auto X, auto Y) { return a * sin(X) * cos(Y); });
-        std::cout << result << '\n';
         auto t1 = steady_clock::now();
-        std::cout << "Time taken = "
+        std::cout << result << '\t'
+                  << "Time taken = "
                   << duration_cast<milliseconds>(t1 - t0).count()
                   << " milliseconds\n";
     };
     using namespace std::execution;
     measure(seq, "Sequenced execution policy");
-    measure(unseq, "Unsequenced execution policy");
     measure(par, "Parallel execution policy");
+    measure(unseq, "Unsequenced execution policy");
     measure(par_unseq, "Parallel unsequenced execution policy");
 }

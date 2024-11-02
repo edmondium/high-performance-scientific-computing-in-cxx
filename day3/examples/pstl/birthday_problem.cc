@@ -1,13 +1,14 @@
+#include <cxxopts.hpp>
 #include <random>
-#include <iostream>
+#include <print>
 #include <vector>
 #include <algorithm>
-#include <cxx20ranges>
+#include <ranges>
 #include <execution>
 #include <limits>
-#include <atomic>
 #include "CountingIterator.hh"
 #include <numeric>
+#include <tbb/global_control.h>
 //#include <tbb/scalable_allocator.h>
 
 /*
@@ -20,9 +21,8 @@
  * time executablename [OPTIONS]
  *
  */
-// defined in cxx20ranges
-// namespace sr = std::ranges;
-// namespace sv = std::views;
+namespace sr = std::ranges;
+namespace sv = std::views;
 
 template <class T>
 //using VectorType = std::vector<T, tbb::scalable_allocator<T>>;
@@ -45,7 +45,7 @@ auto probability_for_equal_birthdays(size_t group_size, size_t nexpt = 10'000'00
     // overload that takes one extra argument at the front: an execution policy.
     // Add one extra argument to transform_reduce: std::execution::par which
     // specifies a parallel execution policy, and see what happens!
-    auto nclashes = std::transform_reduce(algo_counter(0UL), algo_counter(nexpt), 0UL, 
+    auto nclashes = std::transform_reduce(std::execution::par, algo_counter(0UL), algo_counter(nexpt), 0UL, 
             std::plus<size_t>{},
             [&]([[maybe_unused]] auto counter) {
         auto group = sample_group(group_size);
@@ -61,10 +61,24 @@ auto probability_for_equal_birthdays(size_t group_size, size_t nexpt = 10'000'00
 
 auto main(int argc, char* argv[]) -> int
 {
-    auto target_group_size = (argc == 1 ? 50UL : std::stoul(argv[1]));
-    std::cout << "Group size\tShared birthday probability\n\n";
+    cxxopts::Options cmd{"birthday_problem",
+	    "Probability of birthday clashes in group sizes up to a given maximum size"};
+    cmd.add_options()
+	    ("s,size", "Group size", cxxopts::value<std::size_t>()->default_value("50"))
+	    ("t,threads", "Number of threads to use.",
+	         cxxopts::value<std::size_t>()->default_value("1"))
+	    ("h,help", "Print usage");
+    auto args = cmd.parse(argc, argv);
+    if (args.count("help")) {
+        std::print("{}\n", cmd.help());
+        return 0;
+    }
+    auto target_group_size = args["size"].as<std::size_t>();
+    auto nthr = args["threads"].as<std::size_t>();
+    tbb::global_control tbbctl(tbb::global_control::parameter::max_allowed_parallelism, nthr);
+    std::print("Group size\tShared birthday probability\n\n");
     for (auto gs = 0UL; gs < target_group_size; ++gs) {
-        std::cout << gs << "\t\t" << probability_for_equal_birthdays(gs) << "\n";
+        std::print("{}\t{}\n", gs, probability_for_equal_birthdays(gs));
     }
 }
 

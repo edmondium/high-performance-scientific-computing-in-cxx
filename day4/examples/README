@@ -1,16 +1,16 @@
 Compile with nvcc
 
-nvcc -arch=sm_70 -O3 --extended-lambda prog.cu -o prog.ex
+nvcc -std=c++20 -arch=sm_70 -O3 --extended-lambda prog.cu -o prog.ex
 
 
 Compile with clang++
-clang++ -std=c++17 -O3 -stdlib=libc++ --cuda-gpu-arch=sm_70  -I $(which nvcc)/../include -L $(which nvcc)/../lib64 -lcudart_static -ldl -lrt -lpthread -o prog.ex prog.cc
+clang++ -std=c++23 -O3 -stdlib=libc++ --cuda-gpu-arch=sm_70  -I $(which nvcc)/../include -L $(which nvcc)/../lib64 -lcudart_static -ldl -lrt -lpthread -o prog.ex prog.cc
 
 To use CUDA BLAS library, use "-lcublas".
 To use CUDA Random number library, use "-lcurand"
  
 Compile with nvc++ and stdpar
 
-nvc++ -std=c++20 -O3 -stdpar -gpu=cc70 prog.cc -o prog.ex
+nvc++ -std=c++23 -O3 -stdpar -gpu=cc70 prog.cc -o prog.ex
 
 

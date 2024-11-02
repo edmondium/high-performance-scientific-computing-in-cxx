@@ -2,13 +2,13 @@
 #include <algorithm>
 #include <iostream>
 #include <iterator>
-#include <cxx20ranges>
+#include <ranges>
 #include <vector>
 
 int main()
 {
     using namespace std;
-//  namespace sr = std::ranges;
+    namespace sr = std::ranges;
     using namespace output;
     vector v { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     cout << "Vector v = (after initialization): " << v << "\n";

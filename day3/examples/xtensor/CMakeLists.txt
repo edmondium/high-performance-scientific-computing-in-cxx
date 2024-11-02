@@ -17,6 +17,8 @@ set(progs xt0 xt1 xt2)
 foreach(prog ${progs})
     add_executable(${prog} ${prog}.cc)
     target_link_libraries(${prog} xtensor xtensor::optimize xtensor::use_xsimd
-	    BLAS::BLAS Threads::Threads gfortran)
+	    BLAS::BLAS 
+	    #Threads::Threads gfortran
+	  )
 endforeach()
 

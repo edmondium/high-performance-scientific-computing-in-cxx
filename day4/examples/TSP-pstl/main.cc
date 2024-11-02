@@ -1,6 +1,7 @@
+#include <cxxopts.hpp>
+#include <tbb/global_control.h>
 #include <fstream>
 #include <iostream>
-#include <lyra/lyra.hpp>
 #include <random>
 #include <span>
 #include <vector>
@@ -10,24 +11,33 @@ import TSP;
 
 auto main(int argc, char* argv[]) -> int
 {
-    bool randomstart { false }, showhelp { false };
-    std::string file {};
-    size_t nc { 10UL };
-    auto cmd = lyra::help(showhelp)
-        | lyra::opt(file, "file")["-f"]["--file"]("Read city coordinates from file")
-        | lyra::opt(randomstart)["-r"]["--random"]("Work with randomly generated city coordinates")
-        | lyra::opt(nc, "ncities")["-n"]["--num-cities"]("How many cities to generate when using random start");
+    cxxopts::Options cmd{"tsp", "Travelling salesman problem simulator." };
+    // clang-format off
+    cmd.add_options()
+            ("f,file", "Read city coordinates from file",
+                 cxxopts::value<std::string>()->default_value("input.tsp"))
+            ("r,random", "Use randomly generated city coordinates",
+                 cxxopts::value<bool>()->default_value("true"))
+            ("n,ncities", "How many cities to generate when using random start",
+                 cxxopts::value<std::size_t>()->default_value("4"))
+            ("t,threads", "Maximum number of threads to use",
+                 cxxopts::value<std::size_t>()->default_value("1"))
+            ("h,help", "Print usage");
+// clang-format on
 
-    auto result = cmd.parse({ argc, argv });
-    if (!result) {
-        std::cerr << "Error in command line: " << result.message() << std::endl;
-        std::cerr << cmd << "\n";
+    auto args = cmd.parse(argc, argv);
+    if (args.count("help")
+            or (args.count("file") == 0 and args.count("random") == 0)
+            or (args.count("file") != 0 and args.count("random") != 0)
+            or (args.count("random") == 0 and (args.count("ncities") == 0))) {
+        std::cerr << "Error in command line: " << cmd.help() << "\n";
         exit(1);
     }
-    if (showhelp) {
-        std::cout << cmd << "\n";
-        return 0;
-    }
+    const auto randomstart = args["random"].as<bool>();
+    const auto nc = args["ncities"].as<std::size_t>();
+    const auto nthreads = args["threads"].as<std::size_t>();
+    const auto file = args["file"].as<std::string>();
+    tbb::global_control tbbctl(tbb::global_control::parameter::max_allowed_parallelism, nthreads);
 
     std::vector<std::pair<double, double>> locs;
     if (randomstart) {

@@ -1,8 +1,8 @@
 #include "QuadDouble.hh"
-#include <vector>
+#include <span>
 
-void daxpy_explicit(const std::vector<double> & x,
-                   std::vector<double> & y, double a)
+void daxpy_explicit(std::span<const double> & x,
+                   std::span<double> & y, double a)
 {
     QuadDouble bx{0.}, by{0.};
     const QuadDouble ba{a};

@@ -9,7 +9,7 @@ Usage:
 (iv)  feb 1800 2000 # Start 1800, End 2000
 
 Build:
-clang++ -std=c++20 -stdlib=libc++ feb.cc -o feb
+clang++ -std=c++23 -stdlib=libc++ feb.cc -o feb
 
 */
 
@@ -28,16 +28,17 @@ auto main(int argc, char* argv[]) -> int
     using namespace std::chrono;
     using namespace std::chrono_literals;
     auto Y0 { current_year() };
-    auto Y1 = Y0 + years{100};
-    if (argc > 1) Y1 = year{std::stoi(argv[1])};
-    if (argc > 2) Y0 = year{std::stoi(argv[2])};
-    if (Y1 < Y0) std::swap(Y1, Y0);
+    auto Y1 = Y0 + years { 100 };
+    if (argc > 1)
+        Y1 = year { std::stoi(argv[1]) };
+    if (argc > 2)
+        Y0 = year { std::stoi(argv[2]) };
+    if (Y1 < Y0)
+        std::swap(Y1, Y0);
 
     for (auto y = Y0; y < Y1; ++y) {
         auto d = y / February / Sunday[5];
         if (d.ok())
-            std::cout << static_cast<int>(y) << "\n";
+            std::cout << y << "\n";
     }
 }
-
-

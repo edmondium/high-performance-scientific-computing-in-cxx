@@ -1,7 +1,7 @@
 #include <span>
 #include <vector>
 #include <iostream>
-#include <cxx20ranges>
+#include <ranges>
 #include <algorithm>
 
 static std::vector u{2, 3, 4, -1, 9};
@@ -11,7 +11,7 @@ auto get_vec(int c) -> std::span<int> {
 }
 auto main(int argc, char* argv[]) -> int {
 
-    //namespace sr = std::ranges;
+    namespace sr = std::ranges;
     auto iter = sr::min_element(get_vec(argc));
 
     std::cout << "Minimum " << *iter << "\n";

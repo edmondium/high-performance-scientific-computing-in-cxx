@@ -37,7 +37,7 @@ auto probability_for_equal_birthdays(size_t group_size,
     // Add one extra argument to transform_reduce: std::execution::par which
     // specifies a parallel execution policy, and see what happens!
     auto count_begin = offset();
-    auto nclashes = std::transform_reduce(algo_counter(count_begin), 
+    auto nclashes = std::transform_reduce(std::execution::par, algo_counter(count_begin), 
 		    algo_counter(count_begin + nexpt), 0UL, 
             std::plus<size_t>{},
             [&](auto counter) {

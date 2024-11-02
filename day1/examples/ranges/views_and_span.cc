@@ -1,7 +1,7 @@
 // examples/views_and_span.cc
 #include <iostream>
 #include <span>
-#include <cxx20ranges>
+#include <ranges>
 #include <algorithm>
 #include <string>
 #include <iomanip>
@@ -15,11 +15,11 @@ auto main(int argc, char * argv[]) -> int
                   << argv[0] << " some strings in the command line\n";
         return 1;
     }
-    //namespace sr = std::ranges;
-    //namespace sv = std::views;
+    namespace sr = std::ranges;
+    namespace sv = std::views;
     auto [first, last] = sr::minmax( args | sv::drop(1) | sv::transform(str) );
 
-    std::cout << "Alphabetically first and last strings in your input are " 
-              << std::quoted(first) << " and " << std::quoted(last) << "\n";
+    std::cout << std::format("Alphabetically first and last strings in your input are " 
+              "'{}' and '{}'\n", first, last);
 }
 
