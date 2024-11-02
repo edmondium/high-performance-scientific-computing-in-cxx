@@ -1,0 +1,14 @@
+export module saxpy;
+import <algorithm>;
+import <span>;
+
+template <class T>
+concept Number = std::is_floating_point_v<T> or std::is_integral_v<T>;
+
+export template <Number T>
+auto saxpy(T a, std::span<const T> x, std::span<const T> y, std::span<T> z)
+{
+    std::transform(x.begin(), x.end(), y.begin(), z.begin(),
+        [a](T X, T Y) { return a * X + Y; });
+}
+

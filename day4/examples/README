@@ -1,0 +1,12 @@
+Compile with nvcc
+
+nvcc -std=c++14 --expt-extended-lambda prog.cu -o prog.ex
+
+
+Compile with clang++
+
+clang++ -std=c++14 prog.cu -o prog.ex -stdlib=libc++ --cuda-gpu-arch=XXXXX  -I CUDAPATH/include -L CUDAPATH/lib64 -lcudart_static -ldl -lrt -lpthread
+
+To use CUDA BLAS library, use "-lcublas".
+To use CUDA Random number library, use "-lcurand"
+ 

@@ -1,0 +1,74 @@
+#!/bin/bash
+
+MYINCLUDES=""
+MYLIBS=""
+onlycompile=0
+fwdflags=""
+onlyshow=0
+optflags="-O4"
+archflags="-march=native"
+debugging_on=0
+stdflags="-std=c++20"
+nsrc=0
+swbase=$swhome
+
+while [[ $# > 0 ]]; do
+key=$1
+case $key in 
+  -xtblas|--xtensor-blas)
+      MYLIBS="-L$swbase/lib64 -lopenblas -lgfortran -lpthread $MYLIBS"
+  ;;
+  -tbb|--tbb)
+      MYLIBS="-L$swbase/lib/intel64/gcc4.8 -ltbb -ltbbmalloc $MYLIBS"
+  ;;
+  -tbbdebug|--tbbdebug)
+      MYLIBS="-L$swbase/lib/intel64/gcc4.8 -ltbb_debug -ltbbmalloc_debug $MYLIBS"
+  ;;
+  -fmt|--libfmt)
+      MYLIBS="-lfmt $MYLIBS"
+  ;;
+  -O*)
+    optflags=$key
+  ;;
+  -g*)
+    debugging_on=1
+  ;;
+  -show|--show)
+    onlyshow=1
+  ;;
+  -std=c++??|--std=c++??)
+    stdflags=$key
+  ;;
+  -c)
+    onlycompile=1
+    fwdflags="$fwdflags $key"
+  ;;
+  *)
+    sourcetag=$(echo $key | grep -G "[.]cc$")
+    if [[ $sourcetag = $key ]]; then
+      nsrc=$((nsrc+1)); 
+      inferredoutput="$(basename $key .cc).g"
+    fi
+    fwdflags="$fwdflags $key"
+  ;;
+esac
+shift
+done
+
+if [[ $debugging_on -eq 0 ]]; then
+  optflags="$optflags -DNDEBUG  -fomit-frame-pointer"
+fi
+
+outputflag=""
+# Catch the case when we only want to compile; this helps us avoid some warnings:
+if [[ $onlycompile -eq 1 ]]; then
+MYLIBS=""
+else
+[[ $nsrc -eq 1 ]] && outputflag="-o $inferredoutput"
+fi
+if [[ $onlyshow -eq 1 ]]; then
+echo g++ $stdflags -pedantic -Wall $optflags $archflags $MYINCLUDES $fwdflags $MYLIBS $outputflag 
+else
+g++ $stdflags -pedantic -Wall $optflags $archflags $MYINCLUDES $fwdflags $MYLIBS $outputflag
+fi
+

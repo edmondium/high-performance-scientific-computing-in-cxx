@@ -1,0 +1,36 @@
+This example illustrates how to choose different algorithms based on
+whether an input to a template function supports certain operations
+or not. We have some "Machinery" class, with a (let's say) a simplistic
+way to calculate something, which is correct, but not the most clever
+way to do that. In the main function, we instantiate Machinery, and
+pass it to an algo() function, defined in the algo.hh file. The 
+function algo(T x) is written in a general way, to exploit another 
+function, calculateFast(), if it is available in the type T, i.e.,
+if x.calculateFast() and x.helper() are available. If not the algo
+function uses x.calculate(). 
+
+The decision on which function to call is made by the compiler, based
+on the properties of the input type. Go through the example in this
+way:
+
+1. Compile and run the program as it is:
+g++ -O3 -std=c++20 main.cc
+./a.out
+
+This will give you some output showing that it used the calculate()
+function.
+
+2. Now, edit the Machinery.hh file, and uncomment one and then both
+of the functions helper() and calculateFast(). Compile and run after
+each stage. You should see that when helper() and calculateFast()
+are both available to the compiler, it uses them automatically, without
+any changes in the main() or the algo.hh files!
+
+3. Study the algo.hh file to see how the compiler is set up to look
+for the functions helper() and calculateFast() and prefer them.
+
+Final comments: This decision between calculateFast and calculate
+happens during compilation. This means, (i) you should recompile after
+each change. (ii) No time is lost at the run time deciding what function
+to call. This is in a sense "compile time reflection" for C++.
+ 

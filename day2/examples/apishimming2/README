@@ -1,0 +1,72 @@
+The provider-client game with modules
+=====================================
+
+One of the interesting possibilities opened up by having "Modules"
+in C++20 is to implement sensitive libraries as template libraries
+and not distribute them as source. Previously, template functions
+and classes necessarily lived in headers, so that if you distributed
+a product as such a library, your clients had direct access to
+the implementation. While I am not sure about cross-compiler
+compatibility, potential for decompiling module files into source etc.,
+we can at least play the game to see what a module based distribution
+model might look like.
+
+This example uses the same sources as the "apishimming" example, but
+now divided into a "provider" side and a "client" side. You as the
+software provider have a great product, imaginatively named
+"MyGreatProduct". You have a nice powerful "Machinery" which will
+do something important for the client, and an "algo" function that
+has a constrainted template as the input parameter. The client
+might want to use the Machinery class itself, but mostly they
+are interested in the functionality provided by algo(), which they
+might want to use with other classes they write, satisfying the
+criteria that you provide.
+
+Step 1:
+=======
+In the provider folder, you will find the module source files you
+need, as well as a "build.sh" file. Run this to create a distributable
+binary file "MyGreatProduct.pcm". We are not using CMake as the build
+system, because the brand new Modules feature has not really been
+integrated into CMake. It does not have a target type for modules
+like it has for static and dynamic libraries. Check what the
+script is doing, and generate the MyGreatProduct.pcm. "Give" it to
+your client, by copying that binary file into the client/libs/ folder.
+
+Step 2:
+=======
+Now go into the client filder. There we have a CMakeLists.txt. This
+gives your "client" a familiar build system. The client sees a binary
+file. But they can import it in their project and use facilities
+of MyGreatProduct, even if those facilities are highly abstracted
+generic entities, like templates and concepts. To compile the client
+side code, create a "build" sub-folder, and change into it, and
+build like any decent CMake project:
+
+cd client
+mkdir build
+cd build
+CXX=clang++ cmake -DPRODUCT_DIR=../libs ..
+make
+
+Now an executable is created called "callalgo", which runs and
+works as intended. 
+
+Step 3:
+=======
+On the provider side, make the code changes we did earlier to
+pretend that a developer team has managed to implement the
+calculateFast() and helper() functions. Rerun the build.sh script,
+and "send" the new binary as an update to the client. They will
+need to recompile their project after receiving the update, but
+the recompilation is fast because of the modules system. Not a
+single line of code needs to be changed on the client side, and
+yet, when they recompile and run, the call to algo() starts using
+the newly implemented calculateFast() function!
+
+Obs: If anybody figures out why the client needs to first do
+a "make clean" and then "make", I would like to know. Both are
+super fast in this case, but should not be required.
+
+
+ 
